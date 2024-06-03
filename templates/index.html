@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портал услуг повышения настроения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            font-size: 2vw;
+            background-color: #fff;
+            color: #ff0000;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            position: sticky;
+            top: 0;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .header h1 span {
+            color: #000ebf;
+        }
+        .button {
+            background-color: transparent;
+            border: none;
+            color: #000ebf;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 2vw;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #fff;
+            padding: 10px 0;
+            position: fixed;
+            top: 70px;
+            width: 100%;
+            z-index: 999;
+            box-shadow: 0 4px 2px -2px gray;
+        }
+        .category-button {
+            background-color: transparent;
+            color: #000ebf;
+            border: 2px solid #000ebf;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 2vw;
+            cursor: pointer;
+            flex: 1 1 18%;
+            max-width: 150px;
+            border-radius: 25px;
+        }
+        .category-button:focus {
+            outline: none;
+        }
+        .category-button.clicked {
+            background-color: #000ebf;
+            color: white;
+        }
+        .memes {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 120px 20px 20px;
+        }
+        .meme {
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+            width: 60%;
+            max-width: 600px;
+        }
+        .meme img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 600px) {
+            .header {
+                font-size: 1.5vw;
+                padding: 20px;
+            }
+            .button {
+                font-size: 1.5vw;
+            }
+            .category-button {
+                font-size: 1.5vw;
+            }
+            .categories {
+                top: 80px;
+            }
+            .memes {
+                margin: 160px 20px 20px;
+            }
+        }
+        @media (max-width: 600px) {
+            .button {
+                font-size: 3vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span>мем</span>услуги</h1>
+        <div>
+            <button class="button" onclick="window.open('https://DeltaFromX.t.me', '_blank')">Загрузить мем</button>
+            <button class="button" onclick="window.open('about', '_blank')">О сервисе</button>
+        </div>
+    </div>
+    <div class="categories">
+        <button class="category-button" onclick="loadMemes('all')">Остальные</button>
+        <button class="category-button" onclick="loadMemes('it')">IT</button>
+        <button class="category-button" onclick="loadMemes('cats')">Коты</button>
+        <button class="category-button" onclick="loadMemes('school')">Школа</button>
+        <button class="category-button" onclick="loadMemes('games')">По играм</button>
+    </div>
+    <div class="memes" id="memeContainer">
+    </div>
+    <script>
+        async function loadMemes(category) {
+            const response = await fetch(`/get_memes/${category}`);
+            const images = await response.json();
+            const memeContainer = document.getElementById('memeContainer');
+            memeContainer.innerHTML = '';
+
+            images.forEach(image => {
+                const memeDiv = document.createElement('div');
+                memeDiv.className = 'meme';
+                memeDiv.innerHTML = `<img src="${image}" alt="Meme">`;
+                memeContainer.appendChild(memeDiv);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-button');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    categoryButtons.forEach(btn => btn.classList.remove('clicked'));
+                    this.classList.add('clicked');
+                });
+            });
+        });
+
+        window.onload = function() {
+            loadMemes('all');
+        };
+    </script>
+</body>
+</html>
